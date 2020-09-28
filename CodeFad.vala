@@ -9,9 +9,28 @@
 using Gtk;
 
 public class CodeFad : Gtk.Application {
+	public void SetHeaderBar(string title, string sub_title, Gtk.ApplicationWindow window) {
+		/* Create header bar */
+		Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
+		
+		/* Set title with variable */
+		headerBar.set_title(title);
+
+		/* Set subtitle with variable */
+		headerBar.set_subtitle(sub_title);
+
+		/* Show close button */
+		headerBar.set_show_close_button (true);
+
+		/* Set as titlebar */
+		window.set_titlebar(headerBar);
+	} 
+
 	protected override void activate () {
 		/* Create application window */
 		var window = new Gtk.ApplicationWindow (this);
+		
+		SetHeaderBar("CodeFad", "Code editor for everyone", window);
 		
 		/* Create variable as label */
 		var label = new Gtk.Label ("Hello CodeFad!");
