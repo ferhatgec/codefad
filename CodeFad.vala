@@ -16,6 +16,9 @@ public class CodeFad : Window {
 	/* Buttons */
 	Gtk.Button openButton;
     Gtk.Button saveButton;
+	Gtk.Button menuButton;
+
+	public GLib.Menu menu_model { get; set; }
 	
 	private TextView text_view;
 	private File file;
@@ -35,6 +38,7 @@ public class CodeFad : Window {
 		/* Headerbar button */
 		openButton = new Gtk.Button.from_icon_name("document-open", Gtk.IconSize.LARGE_TOOLBAR);
 		saveButton = new Gtk.Button.with_label("Save");
+		menuButton = new Gtk.Button.from_icon_name("open-menu-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 
 		/* Title. */
 		headerBar.set_title(title);
@@ -47,8 +51,9 @@ public class CodeFad : Window {
 
 		/* Append */
 		headerBar.pack_start(openButton);
+		headerBar.pack_end(menuButton);
 		headerBar.pack_end(saveButton);
-
+		
 		/* Set new bar */
 		this.set_titlebar(headerBar);
 
@@ -96,7 +101,7 @@ public class CodeFad : Window {
                     uint8[] contents;
                     string etag_out;
                     file.load_contents (null, out contents, out etag_out);
-					
+
 					/* Append contents to buffer of text view */
                     text_view.buffer.text = (string) contents;
                 } catch (Error e) {
