@@ -9,12 +9,29 @@
 using Gtk;
 
 public class CodeFad : Gtk.Application {
+	Gtk.Button openButton;
 	/* Initialize */
 	public CodeFad() {
 		Object (
 			application_id: "com.fegeya.codefad",
 			flags: ApplicationFlags.FLAGS_NONE
 		);
+	}
+
+	/* Create buttons */
+	public void Buttons(Gtk.HeaderBar header_bar) {
+		/* Set document-open icon */
+		openButton = new Gtk.Button.from_icon_name ("document-open", Gtk.IconSize.LARGE_TOOLBAR);
+		
+		/* Add on headerbar */
+		header_bar.pack_start (openButton);
+	}
+
+	/* Check is clicked */
+	public void IsClicked(Gtk.Button _button, Gtk.ApplicationWindow window) {
+		_button.clicked.connect (() => {
+        	window.set_title ("Open file.");
+    	});
 	}
 
 	public void SetHeaderBar(string title, string sub_title, Gtk.ApplicationWindow window) {
@@ -29,6 +46,10 @@ public class CodeFad : Gtk.Application {
 
 		/* Show close button */
 		headerBar.set_show_close_button (true);
+
+		Buttons(headerBar);
+		
+		IsClicked(openButton, window);
 
 		/* Set as titlebar */
 		window.set_titlebar(headerBar);
