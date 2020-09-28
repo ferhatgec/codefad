@@ -39,7 +39,7 @@ public class FileDialogs : Gtk.Window {
         vbox.pack_start (chooser, true, true, 0);
 
         /* Multiple files cannot be selected: */
-        chooser.select_multiple = true;
+        chooser.select_multiple = false;
 
         /* Add a preview widget: */
         Gtk.Image preview_area = new Gtk.Image ();
