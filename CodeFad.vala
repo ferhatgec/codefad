@@ -30,7 +30,12 @@ public class CodeFad : Gtk.Application {
 	/* Check is clicked */
 	public void IsClicked(Gtk.Button _button, Gtk.ApplicationWindow window) {
 		_button.clicked.connect (() => {
-        	window.set_title ("Open file.");
+			/* Call FileDialogs */
+        	FileDialogs dialog = new FileDialogs();
+			
+			/* Show */
+			dialog.show_all();
+			Gtk.main();
     	});
 	}
 
