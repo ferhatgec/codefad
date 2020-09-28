@@ -18,7 +18,12 @@ public class CodeFad : Window {
     Gtk.Button saveButton;
 	Gtk.Button menuButton;
 
-	public GLib.Menu menu_model { get; set; }
+	/* Menu & Menu Item */
+	GLib.Menu menu = new GLib.Menu ();
+    GLib.MenuItem about = new GLib.MenuItem ("About", null);
+	
+	/* Menu Popover */
+	Gtk.Popover menu_popover;
 	
 	private TextView text_view;
 	private File file;
@@ -54,6 +59,8 @@ public class CodeFad : Window {
 		headerBar.pack_end(menuButton);
 		headerBar.pack_end(saveButton);
 		
+		menu.append_item(about);
+
 		/* Set new bar */
 		this.set_titlebar(headerBar);
 
@@ -61,10 +68,17 @@ public class CodeFad : Window {
         var open_icon = new Gtk.Image.from_icon_name ("document-open", 
             IconSize.SMALL_TOOLBAR);
         
+		menu_popover = new Gtk.Popover(menuButton);
+        menu_popover.position = Gtk.PositionType.BOTTOM;
+		menu_popover.set_size_request (256, -1);
+		menu_popover.modal = false;
+        menu_popover.bind_model (menu, null);
+       
 		/* Action */
         openButton.clicked.connect(on_open_clicked);
 		saveButton.clicked.connect(on_save_clicked);
-
+		menuButton.clicked.connect(on_menu_clicked);
+		
 		/* TextView */
         this.text_view = new TextView ();
 		this.text_view.editable = true;
@@ -121,6 +135,10 @@ public class CodeFad : Window {
         	}
     	}
     }
+
+	private void on_menu_clicked() {
+        menu_popover.set_visible (true);		
+	}
 
     private void open_file (string filename) {
         try {
