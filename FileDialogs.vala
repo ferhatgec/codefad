@@ -12,6 +12,7 @@ using Gtk;
 public class FileDialogs : Gtk.Window {
     public FileDialogs () {
         /* Prepare Gtk.Window: */
+        this.set_default_size(500, 425);
         this.window_position = Gtk.WindowPosition.CENTER;
         this.destroy.connect (Gtk.main_quit);
 
