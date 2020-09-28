@@ -1,3 +1,4 @@
+
 /* MIT License
 #
 # Copyright (c) 2020 Ferhat Geçdoğan All Rights Reserved.
@@ -5,85 +6,100 @@
 #
 # */
 
-/* Import GTK */
+/* Use Gtk namespace */
 using Gtk;
 
-public class CodeFad : Gtk.Application {
+/* CodeFad class */
+public class CodeFad : Window {
+	Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
 	Gtk.Button openButton;
-	/* Initialize */
-	public CodeFad() {
-		Object (
-			application_id: "com.fegeya.codefad",
-			flags: ApplicationFlags.FLAGS_NONE
-		);
-	}
+    private TextView text_view;
 
-	/* Create buttons */
-	public void Buttons(Gtk.HeaderBar header_bar) {
-		/* Set document-open icon */
+	Gtk.Label label;
+
+	/* show_all */
+    public CodeFad () {
+		/* Title */
+        this.title = "CodeFad";
+        
+		/* Window pos. */
+		this.window_position = WindowPosition.CENTER;
+        
+		/* Default window size */
+		set_default_size (800, 500);
+
+		/* Headerbar button */
 		openButton = new Gtk.Button.from_icon_name ("document-open", Gtk.IconSize.LARGE_TOOLBAR);
-		
-		/* Add on headerbar */
-		header_bar.pack_start (openButton);
-	}
 
-	/* Check is clicked */
-	public void IsClicked(Gtk.Button _button, Gtk.ApplicationWindow window) {
-		_button.clicked.connect (() => {
-			/* Call FileDialogs */
-        	FileDialogs dialog = new FileDialogs();
-			
-			/* Show */
-			dialog.show_all();
-			Gtk.main();
-    	});
-	}
-
-	public void SetHeaderBar(string title, string sub_title, Gtk.ApplicationWindow window) {
-		/* Create header bar */
-		Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
-		
-		/* Set title with variable */
+		/* Title. */
 		headerBar.set_title(title);
 
 		/* Set subtitle with variable */
-		headerBar.set_subtitle(sub_title);
+		headerBar.set_subtitle("Programming for everyone, everytime.");
 
 		/* Show close button */
 		headerBar.set_show_close_button (true);
 
-		Buttons(headerBar);
-		
-		IsClicked(openButton, window);
+		/* Append */
+		headerBar.pack_start (openButton);
 
-		/* Set as titlebar */
-		window.set_titlebar(headerBar);
-	} 
+		/* Set new bar */
+		this.set_titlebar(headerBar);
 
-	protected override void activate () {
-		/* Create application window */
-		var window = new Gtk.ApplicationWindow (this);
-		
-		SetHeaderBar("CodeFad", "Code editor for everyone", window);
-		
-		/* Create variable as label */
-		var label = new Gtk.Label ("Hello CodeFad!");
-		
-		/* Add label (center position) */
-		window.add (label);
+		/* Icon of button */
+        var open_icon = new Gtk.Image.from_icon_name ("document-open", 
+            IconSize.SMALL_TOOLBAR);
+        
+		/* Action */
+        openButton.clicked.connect (on_open_clicked);
 
-		/* Set title */
-		window.set_title ("CodeFad");
-
-		/* Set Default size */
-		window.set_default_size (900, 550);
+		/* TextView */
+        this.text_view = new TextView ();
+		this.text_view.editable = true;
+        this.text_view.cursor_visible = true;
 		
-		/* Show */
-		window.show_all ();
+		/* Scroll */
+        var scroll = new ScrolledWindow (null, null);
+        scroll.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
+        scroll.add (this.text_view);
+
+        var vbox = new Box (Orientation.VERTICAL, 0);
+        vbox.pack_start (scroll, true, true, 0);
+        add (vbox);
 	}
-}
 
-/* Main */
-public int main (string[] args) {
-	return new CodeFad ().run (args);
+	/* Action */
+    private void on_open_clicked () {
+        var file_chooser = new FileChooserDialog ("Open File", this,
+                                      FileChooserAction.OPEN,
+                                      "_Cancel", ResponseType.CANCEL,
+                                      "_Open", ResponseType.ACCEPT);
+        
+		if (file_chooser.run () == ResponseType.ACCEPT) {
+            open_file (file_chooser.get_filename ());
+        }
+
+        file_chooser.destroy ();
+    }
+
+    private void open_file (string filename) {
+        try {
+            string text;
+            FileUtils.get_contents (filename, out text);
+            this.text_view.buffer.text = text;
+        } catch (Error e) {
+            stderr.printf ("Error: %s\n", e.message);
+        }
+    }
+
+    public static int main (string[] args) {
+        Gtk.init (ref args);
+
+        var window = new CodeFad ();
+        window.destroy.connect (Gtk.main_quit);
+        window.show_all ();
+
+        Gtk.main ();
+        return 0;
+    }
 }
