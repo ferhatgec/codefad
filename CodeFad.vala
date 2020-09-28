@@ -12,9 +12,13 @@ using Gtk;
 /* CodeFad class */
 public class CodeFad : Window {
 	Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
+	
+	/* Buttons */
 	Gtk.Button openButton;
-    private TextView text_view;
-
+    Gtk.Button saveButton;
+	
+	private TextView text_view;
+	private File file;
 	Gtk.Label label;
 
 	/* show_all */
@@ -29,7 +33,8 @@ public class CodeFad : Window {
 		set_default_size (800, 500);
 
 		/* Headerbar button */
-		openButton = new Gtk.Button.from_icon_name ("document-open", Gtk.IconSize.LARGE_TOOLBAR);
+		openButton = new Gtk.Button.from_icon_name("document-open", Gtk.IconSize.LARGE_TOOLBAR);
+		saveButton = new Gtk.Button.with_label("Save");
 
 		/* Title. */
 		headerBar.set_title(title);
@@ -41,7 +46,8 @@ public class CodeFad : Window {
 		headerBar.set_show_close_button (true);
 
 		/* Append */
-		headerBar.pack_start (openButton);
+		headerBar.pack_start(openButton);
+		headerBar.pack_end(saveButton);
 
 		/* Set new bar */
 		this.set_titlebar(headerBar);
@@ -51,7 +57,8 @@ public class CodeFad : Window {
             IconSize.SMALL_TOOLBAR);
         
 		/* Action */
-        openButton.clicked.connect (on_open_clicked);
+        openButton.clicked.connect(on_open_clicked);
+		saveButton.clicked.connect(on_save_clicked);
 
 		/* TextView */
         this.text_view = new TextView ();
@@ -70,16 +77,44 @@ public class CodeFad : Window {
 
 	/* Action */
     private void on_open_clicked () {
-        var file_chooser = new FileChooserDialog ("Open File", this,
-                                      FileChooserAction.OPEN,
-                                      "_Cancel", ResponseType.CANCEL,
-                                      "_Open", ResponseType.ACCEPT);
-        
-		if (file_chooser.run () == ResponseType.ACCEPT) {
-            open_file (file_chooser.get_filename ());
-        }
+		/* FileChooser */
+        Gtk.FileChooserDialog chooser = new Gtk.FileChooserDialog (
+                "Select a file to edit", this, Gtk.FileChooserAction.OPEN,
+                "_Cancel",
+                Gtk.ResponseType.CANCEL,
+                "_Open",
+                Gtk.ResponseType.ACCEPT);
+            chooser.set_select_multiple (false);
+            chooser.run ();
+            chooser.close ();
+            
+			/* Check */
+			if (chooser.get_file () != null) {
+                file = chooser.get_file ();
 
-        file_chooser.destroy ();
+                try {
+                    uint8[] contents;
+                    string etag_out;
+                    file.load_contents (null, out contents, out etag_out);
+					
+					/* Append contents to buffer of text view */
+                    text_view.buffer.text = (string) contents;
+                } catch (Error e) {
+                    stdout.printf ("Error: %s\n", e.message);
+                }
+            }
+    }
+
+	/* Action */
+    private void on_save_clicked () {
+        if (file != null) {
+            try {
+				/* Replace */
+                file.replace_contents (text_view.buffer.text.data, null, false, FileCreateFlags.NONE, null);
+            } catch (Error e) {
+            	stdout.printf ("Error: %s\n", e.message);
+        	}
+    	}
     }
 
     private void open_file (string filename) {
