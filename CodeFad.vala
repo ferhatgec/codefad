@@ -9,6 +9,14 @@
 using Gtk;
 
 public class CodeFad : Gtk.Application {
+	/* Initialize */
+	public CodeFad() {
+		Object (
+			application_id: "com.fegeya.codefad",
+			flags: ApplicationFlags.FLAGS_NONE
+		);
+	}
+
 	public void SetHeaderBar(string title, string sub_title, Gtk.ApplicationWindow window) {
 		/* Create header bar */
 		Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
