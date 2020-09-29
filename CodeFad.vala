@@ -92,7 +92,8 @@ public class CodeFad : Window {
         this.language_manager = Gtk.SourceLanguageManager.get_default ();
 		this.source_view.editable = true;
         this.source_view.cursor_visible = true;
-		
+		this.source_view.smart_backspace = true;
+
 		/* Scroll */
         var scroll = new ScrolledWindow (null, null);
         scroll.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
