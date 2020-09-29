@@ -21,13 +21,16 @@ public class CodeFad : Window {
 	/* Menu & Menu Item */
 	GLib.Menu menu = new GLib.Menu ();
     GLib.MenuItem about = new GLib.MenuItem ("About", null);
+	GLib.MenuItem saveAs = new GLib.MenuItem ("Save as..", null);
 	
 	/* Menu Popover */
 	Gtk.Popover menu_popover;
 	
-	private TextView text_view;
-	private File file;
+	private SourceFile file;
 	Gtk.Label label;
+
+    private SourceView source_view;
+    private Gtk.SourceLanguageManager language_manager;
 
 	/* show_all */
     public CodeFad () {
@@ -59,6 +62,7 @@ public class CodeFad : Window {
 		headerBar.pack_end(menuButton);
 		headerBar.pack_end(saveButton);
 		
+        menu.append_item(saveAs);
 		menu.append_item(about);
 
 		/* Set new bar */
@@ -78,16 +82,19 @@ public class CodeFad : Window {
         openButton.clicked.connect(on_open_clicked);
 		saveButton.clicked.connect(on_save_clicked);
 		menuButton.clicked.connect(on_menu_clicked);
-		
-		/* TextView */
-        this.text_view = new TextView ();
-		this.text_view.editable = true;
-        this.text_view.cursor_visible = true;
+
+		/* SourceView */
+        this.source_view = new SourceView();
+        this.source_view.set_wrap_mode (Gtk.WrapMode.WORD);
+        this.source_view.buffer.text = "";
+        this.language_manager = Gtk.SourceLanguageManager.get_default ();
+		this.source_view.editable = true;
+        this.source_view.cursor_visible = true;
 		
 		/* Scroll */
         var scroll = new ScrolledWindow (null, null);
         scroll.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
-        scroll.add (this.text_view);
+        scroll.add (this.source_view);
 
         var vbox = new Box (Orientation.VERTICAL, 0);
         vbox.pack_start (scroll, true, true, 0);
@@ -109,15 +116,13 @@ public class CodeFad : Window {
             
 			/* Check */
 			if (chooser.get_file () != null) {
-                file = chooser.get_file ();
+                file = new Gtk.SourceFile();
+                file.location = chooser.get_file();
 
+                var file_loader = new Gtk.SourceFileLoader(source_view.buffer as Gtk.SourceBuffer, file);
+                
                 try {
-                    uint8[] contents;
-                    string etag_out;
-                    file.load_contents (null, out contents, out etag_out);
-
-					/* Append contents to buffer of text view */
-                    text_view.buffer.text = (string) contents;
+                    file_loader.load_async.begin(Priority.DEFAULT, null, null);
                 } catch (Error e) {
                     stdout.printf ("Error: %s\n", e.message);
                 }
@@ -127,9 +132,9 @@ public class CodeFad : Window {
 	/* Action */
     private void on_save_clicked () {
         if (file != null) {
+            var file_saver = new Gtk.SourceFileSaver(source_view.buffer as Gtk.SourceBuffer, file);
             try {
-				/* Replace */
-                file.replace_contents (text_view.buffer.text.data, null, false, FileCreateFlags.NONE, null);
+                file_saver.save_async.begin(Priority.DEFAULT, null, null);
             } catch (Error e) {
             	stdout.printf ("Error: %s\n", e.message);
         	}
@@ -140,15 +145,6 @@ public class CodeFad : Window {
         menu_popover.set_visible (true);		
 	}
 
-    private void open_file (string filename) {
-        try {
-            string text;
-            FileUtils.get_contents (filename, out text);
-            this.text_view.buffer.text = text;
-        } catch (Error e) {
-            stderr.printf ("Error: %s\n", e.message);
-        }
-    }
 
     public static int main (string[] args) {
         Gtk.init (ref args);
