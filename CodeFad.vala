@@ -11,6 +11,7 @@ using Gtk;
 
 /* CodeFad class */
 public class CodeFad : Window {
+    Settings settings = new Settings();
 	Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
 	
 	/* Buttons */
@@ -65,6 +66,9 @@ public class CodeFad : Window {
         menu.append_item(saveAs);
 		menu.append_item(about);
 
+        /* Settings */
+        source_view = new Gtk.SourceView();
+        settings.SetAll(source_view);
         language_manager = Gtk.SourceLanguageManager.get_default();
 
 		/* Set new bar */
@@ -85,19 +89,7 @@ public class CodeFad : Window {
 		saveButton.clicked.connect(on_save_clicked);
 		menuButton.clicked.connect(on_menu_clicked);
 
-		/* SourceView */
-        this.source_view = new SourceView();
-        this.source_view.set_wrap_mode (Gtk.WrapMode.WORD);
-        this.source_view.buffer.text = "";
-        this.language_manager = Gtk.SourceLanguageManager.get_default ();
-		this.source_view.editable = true;
-        this.source_view.cursor_visible = true;
-		this.source_view.smart_backspace = true;
-        this.source_view.left_margin = 0;
-        this.source_view.right_margin = 0;
-        //this.source_view.set_highlight_current_line(true);
-        this.source_view.set_tab_width(4);
-        this.source_view.set_show_line_numbers (true);
+		this.language_manager = Gtk.SourceLanguageManager.get_default ();
 
 		/* Scroll */
         var scroll = new ScrolledWindow (null, null);
