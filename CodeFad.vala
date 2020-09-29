@@ -93,6 +93,11 @@ public class CodeFad : Window {
 		this.source_view.editable = true;
         this.source_view.cursor_visible = true;
 		this.source_view.smart_backspace = true;
+        this.source_view.left_margin = 0;
+        this.source_view.right_margin = 0;
+        //this.source_view.set_highlight_current_line(true);
+        this.source_view.set_tab_width(4);
+        this.source_view.set_show_line_numbers (true);
 
 		/* Scroll */
         var scroll = new ScrolledWindow (null, null);
