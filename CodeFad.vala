@@ -13,7 +13,9 @@ using Gtk;
 public class CodeFad : Window {
     Settings settings = new Settings();
 	Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
-	
+	Notebook notebook = new Notebook();
+    Tab tab = new Tab();
+
 	/* Buttons */
 	Gtk.Button openButton;
     Gtk.Button saveButton;
@@ -70,6 +72,11 @@ public class CodeFad : Window {
         source_view = new Gtk.SourceView();
         settings.SetAll(source_view);
         language_manager = Gtk.SourceLanguageManager.get_default();
+
+        var child_1 = tab.create_notebook_child();
+        notebook.append_page(child_1, tab.create_notebook_child_label("Untitled"));
+
+        this.add(notebook);
 
 		/* Set new bar */
 		this.set_titlebar(headerBar);
