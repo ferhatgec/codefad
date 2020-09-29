@@ -65,6 +65,8 @@ public class CodeFad : Window {
         menu.append_item(saveAs);
 		menu.append_item(about);
 
+        language_manager = Gtk.SourceLanguageManager.get_default();
+
 		/* Set new bar */
 		this.set_titlebar(headerBar);
 
@@ -99,6 +101,9 @@ public class CodeFad : Window {
         var vbox = new Box (Orientation.VERTICAL, 0);
         vbox.pack_start (scroll, true, true, 0);
         add (vbox);
+
+        /* Connect */
+        source_view.populate_popup.connect (on_populate_menu);
 	}
 
 	/* Action */
@@ -145,6 +150,52 @@ public class CodeFad : Window {
         menu_popover.set_visible (true);		
 	}
 
+    void on_populate_menu (Gtk.Menu menu) {
+        var language_menu = new Gtk.MenuItem();
+        var submenu = new Gtk.Menu ();
+
+        language_menu.set_label ("Language");
+        language_menu.set_submenu (submenu);
+
+        /* Create the list of language items */
+        unowned SList<Gtk.RadioMenuItem> group = null;
+        Gtk.RadioMenuItem? item = null;
+
+        /* Add an entry with No Language, or normal. */
+        item = new Gtk.RadioMenuItem (group);
+        
+        item.set_label ("Normal Text");
+
+        item.toggled.connect (() => {
+           /* Normal text edit. */
+           (source_view.buffer as Gtk.SourceBuffer).set_language (null);
+        });
+
+        submenu.add (item);
+
+        /* Set the Language entries */
+        var ids = language_manager.get_language_ids ();
+        foreach (var id in ids) {
+            var lang = language_manager.get_language (id);
+            group = item.get_group ();
+            item = new Gtk.RadioMenuItem (group);
+            item.set_label (lang.name);
+
+            submenu.add (item);
+            item.toggled.connect (() => {
+                (source_view.buffer as Gtk.SourceBuffer).set_language (lang);
+            });
+
+            // Active item
+            if ((source_view.buffer as Gtk.SourceBuffer).language != null && id == (source_view.buffer as Gtk.SourceBuffer).language.id) {
+                item.active = true;
+            }
+        }
+
+        /* Add our Language selection menu to the menu provided in the callback */
+        menu.add (language_menu);
+        menu.show_all ();
+    }
 
     public static int main (string[] args) {
         Gtk.init (ref args);
