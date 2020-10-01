@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Fegeya CodeFad
+Exec=codefad
+Icon=/usr/share/pixmaps/codefad.png
+Type=Application
+Categories=GTK;GNOME;Code Editor;
+Terminal=false
