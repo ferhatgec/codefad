@@ -36,7 +36,8 @@ public class CodeFad : Window {
 	private	Gtk.Entry entry = new Gtk.Entry ();
 	
 	construct {
-		entry.set_placeholder_text("Welcome!");
+		entry.set_width_chars(32);
+		entry.set_placeholder_text("Welcome! I am CodeFad console.");
 	}
 	
 	/* show_all */
@@ -160,7 +161,7 @@ public class CodeFad : Window {
 	}
 
 	void SetEntryName(string str) {
-		entry.set_text(str);
+		headerBar.set_subtitle(str);
 	}
 
     void on_populate_menu (Gtk.Menu menu) {
