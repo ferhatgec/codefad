@@ -33,6 +33,12 @@ public class CodeFad : Window {
     private SourceView source_view;
     private Gtk.SourceLanguageManager language_manager;
 
+	private	Gtk.Entry entry = new Gtk.Entry ();
+	
+	construct {
+		entry.set_placeholder_text("Welcome!");
+	}
+	
 	/* show_all */
     public CodeFad () {
 		/* Title */
@@ -48,7 +54,8 @@ public class CodeFad : Window {
 		openButton = new Gtk.Button.from_icon_name("document-open", Gtk.IconSize.LARGE_TOOLBAR);
 		saveButton = new Gtk.Button.with_label("Save");
 		menuButton = new Gtk.Button.from_icon_name("open-menu-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-
+		entry.set_icon_from_icon_name (Gtk.EntryIconPosition.PRIMARY, "system-search");
+	
 		/* Title. */
 		headerBar.set_title(title);
 
@@ -62,6 +69,8 @@ public class CodeFad : Window {
 		headerBar.pack_start(openButton);
 		headerBar.pack_end(menuButton);
 		headerBar.pack_end(saveButton);
+		
+		headerBar.pack_end(entry);
 		
         menu.append_item(saveAs);
 		menu.append_item(about);
@@ -124,7 +133,8 @@ public class CodeFad : Window {
                 file.location = chooser.get_file();
 
                 var file_loader = new Gtk.SourceFileLoader(source_view.buffer as Gtk.SourceBuffer, file);
-                
+                entry.editable = true;
+                SetEntryName(chooser.get_filename());
                 try {
                     file_loader.load_async.begin(Priority.DEFAULT, null, null);
                 } catch (Error e) {
@@ -147,6 +157,10 @@ public class CodeFad : Window {
 
 	private void on_menu_clicked() {
         menu_popover.set_visible (true);		
+	}
+
+	void SetEntryName(string str) {
+		entry.set_text(str);
 	}
 
     void on_populate_menu (Gtk.Menu menu) {
