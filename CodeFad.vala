@@ -13,7 +13,7 @@ using Gtk;
 public class CodeFad : Window {
     Settings settings = new Settings();
 	Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
-
+	FileOperations operations = new FileOperations();
 	/* Buttons */
 	Gtk.Button openButton;
     Gtk.Button saveButton;
@@ -36,6 +36,16 @@ public class CodeFad : Window {
 	private	Gtk.Entry entry = new Gtk.Entry ();
 	
 	construct {
+		File file = File.new_for_path(GLib.Environment.get_home_dir() + "/.config/codefad");
+		file.make_directory();
+		
+		file = File.new_for_path(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad");
+		
+		FileOutputStream os = file.create (FileCreateFlags.PRIVATE);
+		os.write ("Hello, world\n".data);
+		print ("Created.\n");	
+		
+		print(operations.GetStringFromFile(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad", "Hell"));
 		entry.set_width_chars(32);
 		entry.set_placeholder_text("Welcome! I am CodeFad console.");
 	}
