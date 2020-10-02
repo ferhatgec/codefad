@@ -36,16 +36,16 @@ public class CodeFad : Window {
 	private	Gtk.Entry entry = new Gtk.Entry ();
 	
 	construct {
-		File file = File.new_for_path(GLib.Environment.get_home_dir() + "/.config/codefad");
-		file.make_directory();
+		if(operations.IsExist(GLib.Environment.get_home_dir() + "/.config/codefad") == false) {
+			operations.CreateDirectory(GLib.Environment.get_home_dir() + "/.config/codefad");
+		}
 		
-		file = File.new_for_path(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad");
-		
-		FileOutputStream os = file.create (FileCreateFlags.PRIVATE);
-		os.write ("Hello, world\n".data);
-		print ("Created.\n");	
+		if(operations.IsExist(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad") == false) {		
+			operations.CreateFile(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad", "Hello, world!\n");
+		}
 		
 		print(operations.GetStringFromFile(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad", "Hell"));
+		
 		entry.set_width_chars(32);
 		entry.set_placeholder_text("Welcome! I am CodeFad console.");
 	}

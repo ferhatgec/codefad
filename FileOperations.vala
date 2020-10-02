@@ -27,4 +27,23 @@ public class FileOperations {
 
 		return line;
     }
+    
+    public void CreateDirectory(string _directory) {
+    	File file = File.new_for_path(_directory);
+		file.make_directory();
+    }
+    
+    public void CreateFile(string _directory, string _data) {
+		File file = File.new_for_path(_directory);
+		FileOutputStream os = file.create (FileCreateFlags.PRIVATE);
+		os.write (_data.data);	
+    } 
+    
+    public bool IsExist(string _directory) {
+    	if (GLib.FileUtils.test(_directory, GLib.FileTest.EXISTS)) {
+			return true;
+		}
+		
+		return false;
+    }
 }	
