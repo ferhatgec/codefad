@@ -46,4 +46,12 @@ public class FileOperations {
 		
 		return false;
     }
+
+	public void AddText(string _directory, string data) {
+		try {
+			FileUtils.set_contents(_directory, data);
+		} catch(Error e) {
+    	  	stderr.printf ("Error: %s\n", e.message);
+		}
+	}
 }	
