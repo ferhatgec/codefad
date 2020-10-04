@@ -26,8 +26,10 @@ public class Settings {
 		string show_line_numbers = _operations.GetStringFromFile(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad", "show_line_numbers: ");
 		string highlight_current_line = _operations.GetStringFromFile(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad", "highlight_current_line: ");
 		
+		
+		
 		bool _line_numbers = true;
-		bool _highlight_current_line = true;
+		bool _highlight_current_line = false;
 		
 		/* Erase commands */		
 		tab_width = tab_width.replace("tab_width: ", "");
@@ -42,7 +44,7 @@ public class Settings {
 
 		stdout.printf(highlight_current_line);
 		if(highlight_current_line == "false") {
-			_highlight_current_line = false;
+		//	_highlight_current_line = false;
 		}
 
 		/* SourceView */
@@ -56,6 +58,6 @@ public class Settings {
         //source_view.set_highlight_current_line(true);
         source_view.set_tab_width(int.parse(tab_width));
         source_view.set_show_line_numbers(_line_numbers);
-		source_view.set_highlight_current_line(_highlight_current_line);
+		source_view.set_highlight_current_line(false);
 	}
 }
