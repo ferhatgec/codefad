@@ -34,11 +34,13 @@ public class Settings {
 		left_margin = left_margin.replace("left_margin: ", "");
 		right_margin = right_margin.replace("right_margin: ", "");
 		show_line_numbers = show_line_numbers.replace("show_line_numbers: ", "");
+		highlight_current_line = show_line_numbers.replace("highlight_current_line: ", "");
 		
 		if(show_line_numbers == "false") {
 			_line_numbers = false;
 		}
 
+		stdout.printf(highlight_current_line);
 		if(highlight_current_line == "false") {
 			_highlight_current_line = false;
 		}

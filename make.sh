@@ -6,5 +6,3 @@ valac --pkg gtk+-3.0 --pkg gtksourceview-4 ./src/FileOperations.vala ./src/Comma
 mkdir /usr/share/pixmaps/codefad/
 cp resource/*.png /usr/share/pixmaps/codefad/
 cp codefad.desktop /usr/share/applications/
-
-./codefad 
