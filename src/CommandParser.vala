@@ -56,7 +56,7 @@ class CommandParser {
 		   } else if(_command.contains("right_margin: ") == true) {
 		   		ChangeSettings("right_margin: ", _command);
 		   } else if(_command.contains("highlight_current_line: ") == true) {
-		   		ChangeSettings("right_margin: ", _command);
+		   		ChangeSettings("highlight_current_line: ", _command);
 		   }
 	  }
 	  
