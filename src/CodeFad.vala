@@ -14,7 +14,9 @@ public class CodeFad : Window {
     Settings settings = new Settings();
 	Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
 	FileOperations operations = new FileOperations();
-	/* Buttons */
+	CommandParser cmd = new CommandParser();
+	
+    /* Buttons */
 	Gtk.ToolButton openButton;
     Gtk.Button saveButton;
 	Gtk.Button menuButton;
@@ -42,7 +44,7 @@ public class CodeFad : Window {
 	}
 	
 	/* show_all */
-    public CodeFad () {
+    public CodeFad() {
 		/* Title */
         this.title = "CodeFad";
         
@@ -101,7 +103,8 @@ public class CodeFad : Window {
         openButton.clicked.connect(on_open_clicked);
 		saveButton.clicked.connect(on_save_clicked);
 		menuButton.clicked.connect(on_menu_clicked);
-
+		entry.activate.connect(on_entry_inputted);
+		
 		this.language_manager = Gtk.SourceLanguageManager.get_default ();
 
 		/* Scroll */
@@ -160,6 +163,10 @@ public class CodeFad : Window {
 
 	private void on_menu_clicked() {
         menu_popover.set_visible (true);		
+	}
+
+	private void on_entry_inputted() {
+		cmd.GetCommand(entry.text);
 	}
 
 	void SetEntryName(string str) {
