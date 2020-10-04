@@ -15,7 +15,7 @@ public class CodeFad : Window {
 	Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
 	FileOperations operations = new FileOperations();
 	/* Buttons */
-	Gtk.Button openButton;
+	Gtk.ToolButton openButton;
     Gtk.Button saveButton;
 	Gtk.Button menuButton;
 
@@ -53,7 +53,8 @@ public class CodeFad : Window {
 		set_default_size (800, 500);
 
 		/* Headerbar button */
-		openButton = new Gtk.Button.from_icon_name("document-open", Gtk.IconSize.LARGE_TOOLBAR);
+		Gtk.Image img = new Gtk.Image.from_file("/usr/share/pixmaps/codefad/codefad_32.png");
+		openButton = new Gtk.ToolButton(img, null);
 		saveButton = new Gtk.Button.with_label("Save");
 		menuButton = new Gtk.Button.from_icon_name("open-menu-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		entry.set_icon_from_icon_name (Gtk.EntryIconPosition.PRIMARY, "system-search");
