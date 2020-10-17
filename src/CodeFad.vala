@@ -41,6 +41,8 @@ public class CodeFad : Window {
 		settings.Write();
 		entry.set_width_chars(32);
 		entry.set_placeholder_text("Welcome! I am CodeFad console.");
+		entry.set_icon_from_icon_name(PRIMARY, "system-search-symbolic");
+        entry.set_icon_from_icon_name (SECONDARY, "edit-clear");
 	}
 	
 	/* show_all */
@@ -104,6 +106,14 @@ public class CodeFad : Window {
 		saveButton.clicked.connect(on_save_clicked);
 		menuButton.clicked.connect(on_menu_clicked);
 		entry.activate.connect(on_entry_inputted);
+		
+		this.entry.icon_press.connect((pos, event) => {
+      		if (pos == SECONDARY) {
+        		entry.set_text("");
+      		} else if(pos == PRIMARY) {
+      			cmd.GetCommand(entry.text);
+      		}
+    	});
 		
 		this.language_manager = Gtk.SourceLanguageManager.get_default ();
 
