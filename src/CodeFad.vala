@@ -12,6 +12,8 @@ using Gtk;
 /* CodeFad class */
 public class CodeFad : Window {
     Settings settings = new Settings();
+    FadTerminal fadterm  = new FadTerminal();
+    
 	Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
 	FileOperations operations = new FileOperations();
 	CommandParser cmd = new CommandParser();
@@ -22,9 +24,9 @@ public class CodeFad : Window {
 	Gtk.Button menuButton;
 
 	/* Menu & Menu Item */
-	GLib.Menu menu = new GLib.Menu ();
-    GLib.MenuItem about = new GLib.MenuItem ("About", null);
-	GLib.MenuItem saveAs = new GLib.MenuItem ("Save as..", null);
+	GLib.Menu menu = new GLib.Menu();
+    GLib.MenuItem about = new GLib.MenuItem("About", null);
+	GLib.MenuItem saveAs = new GLib.MenuItem("Save as..", null);
 	
 	/* Menu Popover */
 	Gtk.Popover menu_popover;
@@ -36,6 +38,9 @@ public class CodeFad : Window {
     private Gtk.SourceLanguageManager language_manager;
 
 	private	Gtk.Entry entry = new Gtk.Entry ();
+	
+	private Vte.Terminal terminal = new Vte.Terminal();
+	private Gtk.Frame frame = new Gtk.Frame(null);
 	
 	public static string argument = null;
 	
@@ -89,6 +94,9 @@ public class CodeFad : Window {
         settings.SetAll(source_view);
         language_manager = Gtk.SourceLanguageManager.get_default();
 
+		fadterm.init_fadterminal(terminal, frame);
+		
+		frame.add(terminal);
 
 		/* Set new bar */
 		this.set_titlebar(headerBar);
@@ -127,11 +135,15 @@ public class CodeFad : Window {
         var scroll = new ScrolledWindow (null, null);
         scroll.set_policy (PolicyType.AUTOMATIC, PolicyType.AUTOMATIC);
         scroll.add (this.source_view);
-
-        var vbox = new Box (Orientation.VERTICAL, 0);
+		
+		//this.add(frame);
+		
+        var vbox = new Box (Orientation.VERTICAL, 5);
+        vbox.set_homogeneous(true);
         vbox.pack_start (scroll, true, true, 0);
-        add (vbox);
-
+        vbox.pack_start(frame, true, true, 5);
+        add(vbox);
+		
         /* Connect */
         source_view.populate_popup.connect (on_populate_menu);
 	}
