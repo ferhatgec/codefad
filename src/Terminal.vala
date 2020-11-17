@@ -19,12 +19,14 @@ public class FadTerminal {
 		Gdk.RGBA foreground = Gdk.RGBA();
 		foreground.parse("#ffffff");
 		terminal.set_colors(foreground,background,null);
-
+	
+		unowned string arg = GLib.Environment.get_variable("SHELL");
+		
 		try {
 			terminal.spawn_sync(
 				Vte.PtyFlags.DEFAULT, 
 				null, 
-				{ "/bin/scrift" }, 
+				{ arg }, 
 				null,
 				SpawnFlags.DO_NOT_REAP_CHILD,
 				null,
