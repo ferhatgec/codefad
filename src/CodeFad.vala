@@ -37,6 +37,8 @@ public class CodeFad : Window {
 
 	private	Gtk.Entry entry = new Gtk.Entry ();
 	
+	public static string argument = null;
+	
 	construct {
 		settings.Write();
 		entry.set_width_chars(32);
@@ -101,6 +103,10 @@ public class CodeFad : Window {
 		menu_popover.modal = false;
         menu_popover.bind_model (menu, null);
        
+       	if(argument != null) {
+			open_file(argument);
+		}
+       
 		/* Action */
         openButton.clicked.connect(on_open_clicked);
 		saveButton.clicked.connect(on_save_clicked);
@@ -159,6 +165,23 @@ public class CodeFad : Window {
             }
     }
 
+	public void open_file(string _file) {
+		File gfile = File.new_for_path(_file);
+		
+		file = new Gtk.SourceFile();
+		file.location = gfile;
+
+		var file_loader = new Gtk.SourceFileLoader(source_view.buffer as Gtk.SourceBuffer, file);
+		entry.editable = true;
+		SetEntryName(_file);
+        
+		try {
+			file_loader.load_async.begin(Priority.DEFAULT, null, null);
+		} catch (Error e) {
+			stdout.printf ("Error: %s\n", e.message);
+		}
+	}
+	
 	/* Action */
     private void on_save_clicked () {
         if (file != null) {
@@ -226,18 +249,20 @@ public class CodeFad : Window {
         }
 
         /* Add our Language selection menu to the menu provided in the callback */
-        menu.add (language_menu);
-        menu.show_all ();
+        menu.add(language_menu);
+        menu.show_all();
     }
 
-    public static int main (string[] args) {
+    public static int main(string[] args) {
         Gtk.init (ref args);
 
-        var window = new CodeFad ();
-        window.destroy.connect (Gtk.main_quit);
-        window.show_all ();
-
-        Gtk.main ();
+		if(args[1] != null) { argument = args[1]; }
+		
+		var window = new CodeFad();
+        window.destroy.connect(Gtk.main_quit);
+        window.show_all();
+		
+        Gtk.main();
         return 0;
     }
 }
