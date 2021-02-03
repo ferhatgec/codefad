@@ -1,7 +1,7 @@
 
 /* MIT License
 #
-# Copyright (c) 2020 Ferhat Geçdoğan All Rights Reserved.
+# Copyright (c) 2020-2021 Ferhat Geçdoğan All Rights Reserved.
 # Distributed under the terms of the MIT License.
 #
 # */
@@ -17,6 +17,7 @@ public class CodeFad : Window {
 	Gtk.HeaderBar headerBar = new Gtk.HeaderBar();
 	FileOperations operations = new FileOperations();
 	CommandParser cmd = new CommandParser();
+	EntryCompletion completion = new EntryCompletion();
 	
     /* Buttons */
 	Gtk.ToolButton openButton;
@@ -98,6 +99,8 @@ public class CodeFad : Window {
 		
 		frame.add(terminal);
 
+        completion.EntryCompletion(entry);
+        
 		/* Set new bar */
 		this.set_titlebar(headerBar);
 
