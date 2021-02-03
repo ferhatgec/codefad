@@ -1,7 +1,7 @@
 
 /* MIT License
 #
-# Copyright (c) 2020 Ferhat Geçdoğan All Rights Reserved.
+# Copyright (c) 2020-2021 Ferhat Geçdoğan All Rights Reserved.
 # Distributed under the terms of the MIT License.
 #
 # */
@@ -15,7 +15,7 @@ public class Settings {
 		}
 
 		if(_operations.IsExist(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad") == false) {
-		    _operations.CreateFile(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad", "tab_width: 4\nshow_line_numbers: true\nleft_margin: 0\nright_margin: 0\nhighlight_current_line: true");
+		    _operations.CreateFile(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad", "tab_width: 4\nshow_line_numbers: true\nleft_margin: 0\nright_margin: 0\nhighlight_current_line: true\nlast_file: ");
 		}
 	}
 	

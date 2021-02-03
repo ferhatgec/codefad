@@ -118,7 +118,13 @@ public class CodeFad : Window {
 			open_file(argument);
 		}
        
-		/* Action */
+        string last_file = operations.GetStringFromFile(GLib.Environment.get_home_dir() + "/.config/codefad/settings_code.fad", "last_file: ");
+
+        if(last_file.length > 11) {
+            open_file(last_file.replace("last_file: ", ""));
+        }
+       
+        /* Action */
         openButton.clicked.connect(on_open_clicked);
 		saveButton.clicked.connect(on_save_clicked);
 		menuButton.clicked.connect(on_menu_clicked);
@@ -168,15 +174,19 @@ public class CodeFad : Window {
 			if (chooser.get_file () != null) {
                 file = new Gtk.SourceFile();
                 file.location = chooser.get_file();
-
+                
                 var file_loader = new Gtk.SourceFileLoader(source_view.buffer as Gtk.SourceBuffer, file);
+                
                 entry.editable = true;
                 SetEntryName(chooser.get_filename());
+                
                 try {
                     file_loader.load_async.begin(Priority.DEFAULT, null, null);
                 } catch (Error e) {
                     stdout.printf ("Error: %s\n", e.message);
                 }
+                
+                cmd.ChangeSettings("last_file: ", "last_file: " + chooser.get_filename());
             }
     }
 
@@ -195,6 +205,8 @@ public class CodeFad : Window {
 		} catch (Error e) {
 			stdout.printf ("Error: %s\n", e.message);
 		}
+		
+		cmd.ChangeSettings("last_file: ", "last_file: " + _file);
 	}
 	
 	/* Action */
@@ -278,6 +290,7 @@ public class CodeFad : Window {
         window.show_all();
 		
         Gtk.main();
+        
         return 0;
     }
 }
